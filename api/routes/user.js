@@ -1,17 +1,24 @@
 const User = require('../../models/user')
+const jwt = require('jsonwebtoken')
 
 module.exports = function (router) {
-  router.get('/user/:id', function (req, res) {
-    User.findById(req.params.id).exec()
-      .then(docs => res.status(200)
-        .json(docs)
-      )
-      .catch(err => res.status(500)
-        .json({
-          message: 'Error finding user',
-          error: err
-        })
-      )
+  router.get('/user/:id', verifyToken, function (req, res) {
+    jwt.verify(req.token, 'asdsad', (err, authData) => {
+      if (err) {
+        res.sendStatus(403)
+      } else {
+        User.findById(req.params.id).exec()
+          .then(docs => res.status(200)
+            .json(Object.assign({}, docs, authData))
+          )
+          .catch(err => res.status(500)
+            .json({
+              message: 'Error finding user',
+              error: err
+            })
+          )
+      }
+    })
   })
 
   router.get('/user/email/:email', function (req, res) {
@@ -45,4 +52,16 @@ module.exports = function (router) {
       res.status(200).json(respRaw)
     })
   })
+
+  function verifyToken (req, res, next) {
+    const bearerHeader = req.headers['authorization']
+    if (typeof bearerHeader !== 'undefined') {
+      const bearer = bearerHeader.split(' ')
+      const bearerToken = bearer[1]
+      req.token = bearerToken
+      next()
+    } else {
+      res.sendStatus(403)
+    }
+  }
 }
