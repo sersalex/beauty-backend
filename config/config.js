@@ -1,0 +1,2 @@
+export const SECRET = 'iZW1haWwiOiJzZXJAbWFpbC5ydSIsInBhc3N3b3JkIjoiMjEyMzEyMTIzIiwiaWF0Ijox'
+export const REFRESH_SECRET = 'W1haWwiOiJzZXJAbWFpbC5ydSIsInBhc3N3b3JkIjoiMjEyMzEyMTIzIiwiaWF0IjoxNTM3NjA2NDg2LCJleH'
